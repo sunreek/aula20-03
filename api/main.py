@@ -1,14 +1,31 @@
 from typing import Optional
-
 from fastapi import FastAPI
+from pydantic import BaseModel
 
-app = FastAPI()
+app = FastAPI(
+    titulo="API do unipão"
+    descrição="essa api serve para calcular a previsão de preço de uma ação na bolsa"
+    docs_url='/docs'#habilitar o swagger
+)
 
+class InfoPrevisao(BaseModel):
+    empresa: str
+    volume:float
+    prev_fecham:float
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def principal():
+    return {"status" : true,
+            "messagem": "serviço rodando"}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+
+###***criando um post, porque vamos colocar itens, por isso é post (criar)***
+@app.post("predict")
+def previsoes(payload : InfoPrevisao):
+    if InfoPrevisao.empresa == "aapl":
+        w0, w1, w2 = [-15.36, 1.06, -3.25]
+        previsao = w0 + w1 * InfoPrevisao.prev_fecham + w2 * InfoPrevisao.volume
+    else
+    previsao = 0
+
+    return {"profesia": revisão}
