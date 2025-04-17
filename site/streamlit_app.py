@@ -1,43 +1,35 @@
 import streamlit as st
 
-st.title("🎈 💹 Ferramenta de Previsão de Ações")
-st.write(
-    "Simule aqui o valor estimado de fechamento de ações baseado no volume [docs.streamlit.io](https://docs.streamlit.io/)."
-)
-empresas = {
-    "Petrobras (PETR4)": 34.70,
-    "Vale (VALE3)": 67.20,
-    "Magazine Luiza (MGLU3)": 3.80,
-    "Ambev (ABEV3)": 15.45
+# Base simples de conhecimento (você pode expandir depois)
+base_conhecimento = {
+    "dub 002": {
+        "cliente": "Esse erro indica falha de comunicação com o S@T. Verifique se o cabo está conectado, ou entre em contato com o suporte técnico da franquia.",
+        "analista": "Erro DUB 002: Verifique conexão física com o S@T, reinicie o serviço FiscalFlow, valide o status do SATMonitor e teste comunicação."
+    },
+    "pdv não abre": {
+        "cliente": "Verifique se o caixa foi aberto corretamente. Se for franquia, contate o responsável pela abertura. Caso contrário, tente reiniciar o sistema.",
+        "analista": "Validar licenciamento, comunicação com o banco, integridade do banco local e se há erro de DLL ou FiscalFlow."
+    },
+    "cadastrar produto": {
+        "cliente": "Se você for franquia, o cadastro de produto deve ser feito pela matriz. Caso contrário, acesse o menu Produtos > Novo Produto e preencha os dados obrigatórios.",
+        "analista": "Verifique se o cliente é franquia. Se não for, oriente a acessar Cadastros > Produto > Novo. Lembre de validar a tributação antes de liberar a venda."
+    }
 }
 
-# 👩‍💼 Seletor da empresa
-empresa = st.selectbox("📊 Selecione a empresa:", list(empresas.keys()))
+# Título da página
+st.title("🤖 DesenrolaBot – Seu Assistente de Suporte Degust")
 
-# 🔢 Volume de ações
-volume = st.number_input("🧮 Quantidade de ações:", min_value=1, step=1)
+# Seleção de perfil
+perfil = st.radio("Você é:", ["Cliente", "Analista"])
 
-# 📉 Cálculo da previsão
-prev_fecham = st.number_input("Previsão de Fechamento:", step=0.01)
+# Entrada de texto
+duvida = st.text_input("Digite sua dúvida ou palavra-chave:")
 
-
-# URL da API (exemplo usando uma API pública)
-url = "https://aula-2010-62jk.onrender.com/previsoes"
-
-# Parâmetros opcionais da requisição (se necessário)
-payload = {
-    "empresa": empresa,
-    "volume": volume,
-    "prev_fecham" : prev_fecham
-}
-
-# Fazendo a requisição GET
-response = requests.get(url, body=payload)
-
-# Verificando se a requisição foi bem-sucedida
-if response.status_code == 200:
-    dados = response.json()
-    st.write(f"Previsão: {dados}")
-else:
-    st.write(f"Erro na requisição: {response.status_code}")
-    st.write(response.text)
+# Botão para buscar resposta
+if st.button("Buscar Resposta"):
+    chave = duvida.strip().lower()
+    if chave in base_conhecimento:
+        resposta = base_conhecimento[chave][perfil.lower()]
+        st.success(resposta)
+    else:
+        st.warning("🤔 Não encontrei essa informação ainda. Tente uma palavra-chave diferente ou entre em contato com o suporte.")
